@@ -52,7 +52,7 @@ void Layer::unrolled_weights()
 
 		weights = m_layer[i].get_weights();
 
-		for (int j = 0; j < weights.size(); ++j)
+		for (size_t j = 0; j < weights.size(); ++j)
 		{
 			m_allWeights.push_back(weights[j]);
 		}

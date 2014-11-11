@@ -16,7 +16,7 @@ public:
 	~Network();
 
 	//methods
-	void build_network(std::default_random_engine& generator);
+	void build_network(int seed=0);
 	void set_allWeights(std::vector<std::vector<double>>& weights);
 	void set_inputs(std::vector<double>& inputs);
 	void forward_prop();

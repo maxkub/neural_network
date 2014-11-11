@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <random>
+#include <chrono>
 #include "Neuron.h"
 #include "Layer.h"
 
@@ -26,8 +27,22 @@ Network::~Network()
 
 
 // set network
-void Network::build_network(default_random_engine& generator)
+void Network::build_network(int seed)
 {
+
+	// create random number generator
+	default_random_engine generator;
+
+	if (seed == 0)
+	{
+		int lseed = chrono::system_clock::now().time_since_epoch().count();
+		generator.seed(lseed);
+	}
+	else
+	{
+		generator.seed(seed);
+	}
+
 
 	m_input_size = m_scheme[0];
 	m_Noutputs   = m_scheme.back();
