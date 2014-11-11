@@ -16,14 +16,15 @@ int main()
 
 
 
-	Network network(scheme);
+	Network network(scheme,1);
 
 	network.build_network();
 
 	weights = network.get_allWeights();
 
-	cout << "all weights size = " << weights.size() << endl;
+	//cout << "all weights size = " << weights.size() << endl;
 
+	/*
 	for (auto c : weights)
 	{
 		for (auto x : c)
@@ -33,7 +34,7 @@ int main()
 		cout << endl;
 		
 	}
-	cout << endl;
+	cout << endl;*/
 	
 
 	// assign 1 to all weights

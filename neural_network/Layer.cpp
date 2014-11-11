@@ -124,6 +124,9 @@ void Layer::compute()
 // print output of all neurons in layer
 void Layer::print_outputs()
 {
+
+	cout << " layer_id = " << m_layer_id << ": ";
+
 	for (int i = 0; i < m_Nneurons; ++i)
 	{
 		cout << m_layer[i].get_output() << " " ;

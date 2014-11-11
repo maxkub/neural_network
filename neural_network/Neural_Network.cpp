@@ -50,14 +50,15 @@ void Network::build_network(int seed)
 
 
 
-	for (size_t i = 0; i < m_scheme.size()-1; ++i)
+	for (size_t i = 1; i <= m_scheme.size()-1; ++i)
 	{
-		Layer layer(m_scheme[i] + 1, m_scheme[i+1], i + 1);
+		Layer layer(m_scheme[i-1] + 1, m_scheme[i], i);
 		layer.build_layer(generator);
 
 		m_network.push_back(layer);
 	}
 
+	cout << "end build" << endl;
 
 	unrolled_weights();
 
@@ -67,7 +68,7 @@ void Network::build_network(int seed)
 // unrolling layers weights
 void Network::unrolled_weights()
 {
-	for (int i = 0; i <= m_Nlayers; ++i)
+	for (size_t i = 0; i < m_scheme.size()-1; ++i)
 	{
 		m_allweights.push_back(m_network[i].get_weights());
 	}
