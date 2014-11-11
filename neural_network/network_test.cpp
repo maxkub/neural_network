@@ -16,7 +16,7 @@ int main()
 
 
 
-	Network network(scheme,1);
+	Network network(scheme);
 
 	network.build_network();
 
