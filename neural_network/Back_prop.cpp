@@ -1,0 +1,216 @@
+#include "stdafx.h"
+#include <fstream>
+#include <iostream>
+#include "Back_prop.h"
+#include "Neural_Network.h"
+
+using namespace std;
+
+// Constructor
+Back_prop::Back_prop(Network& network, double& lambda) : m_network(network), m_lambda(lambda)
+{
+}
+
+// Destructor
+Back_prop::~Back_prop()
+{
+}
+
+
+// initialization of the training
+void Back_prop::init()
+{
+	m_training_num = 0;
+	m_cost = 0.;
+	m_Deltas = {};
+	m_scheme = m_network.get_scheme();
+	m_net_weights = m_network.get_allWeights();
+
+	m_Deltas = m_net_weights;
+
+	for (size_t i = 0; i < m_Deltas.size(); ++i)
+	{
+		m_Deltas[i].assign(m_Deltas[i].size(), 0.);
+	}
+
+	m_Dvect = m_Deltas; 
+	m_grads = m_Deltas;
+	
+}
+
+// Backpropagation algorithm
+void Back_prop::back_propagation_step(vector<double>& training_inputs, vector<double>& training_outputs)
+{
+
+	vector<double> net_outputs;
+	vector<vector<double>> deltas;
+	vector<double> layer_outputs;
+	vector<double> temp_d;
+	double sum=0.;
+
+
+	m_network.set_inputs(training_inputs);
+	m_network.forward_prop();
+
+	net_outputs = m_network.get_outputs();
+
+	// compute the error terms of the output layer
+	for (size_t i = 0; i < net_outputs.size(); ++i)
+	{
+		deltas[0].push_back( (net_outputs[i] - training_outputs[i])*net_outputs[i]*(1.-net_outputs[i]) );
+	}
+
+
+	// compute the error terms of the earlier layers
+	for (size_t i = m_scheme.size() - 1; i-- > 0;) // reverse loop on layers
+	{
+
+		temp_d.clear();
+
+		for (int j = 0; j <= m_scheme[i] ; ++j) // loop on neurons in layer l (with the bias)
+		{
+
+			sum = 0.;
+
+			for (int k = 0; k < m_scheme[i+1]; ++k) // loop on neurons in layer l+1 (without the bias)
+			{
+				sum += deltas[i][k] * m_net_weights[i][k*m_scheme[i]];
+			}
+
+			int num = i + 1;
+			layer_outputs = m_network.get_layer_outputs(num);
+
+			temp_d.push_back(sum*layer_outputs[j] * (1. - layer_outputs[j]));
+
+	
+		}
+
+		deltas.push_back(temp_d);
+	}
+
+	// compute Deltas array
+	for (size_t i = 0; i < m_net_weights.size(); ++i)
+	{
+		int num = i + 1;
+		layer_outputs = m_network.get_layer_outputs(num);
+
+		for (int j = 0; j <= m_scheme[i]; ++j) // loop on neurons in layer l (with bias unit)
+		{
+
+			for (int k = 0; k < m_scheme[i + 1]; ++k) // loop on neurons in layer l+1 (without bias unit)
+			{
+				int num = k*m_scheme[i + 1] + j;
+				m_Deltas[i][num] += layer_outputs[j]*deltas[m_scheme.size() - 2 - i][j];
+			}
+			
+		}
+		
+	}
+
+	m_training_num += 1;
+
+	
+
+}
+
+
+// compute the gradients using back_propagation results stored in m_Deltas
+void Back_prop::back_prop_grads()
+{
+
+	for (size_t i = 0; i < m_Dvect.size(); ++i)
+	{
+
+		for (size_t j = 0; j < m_Dvect[i].size(); ++j)
+		{
+			m_Dvect[i][j] = 1. / ((float)m_training_num)*m_Deltas[i][j] + m_lambda*m_net_weights[i][j];
+
+		}
+	}
+}
+
+// gradient descent
+void Back_prop::gradient_descent(double alpha)
+{
+	for (size_t i = 0; i < m_Dvect.size(); ++i)
+	{
+
+		for (size_t j = 0; j < m_Dvect[i].size(); ++j)
+		{
+			m_net_weights[i][j] -= alpha*m_Dvect[i][j];
+		}
+	}
+
+	m_network.set_allWeights(m_net_weights);
+
+}
+
+// compute cost function
+void Back_prop::cost(vector<double>& training_outputs)
+{
+	vector<double> net_outputs = m_network.get_outputs();
+
+	for (int i = 0; i < m_scheme.back(); ++i)
+	{
+		m_cost += -(training_outputs[i] * log(net_outputs[i]) + (1. - training_outputs[i]) * log(1. - net_outputs[i])) ;
+	}
+}
+
+
+
+// Automatic training of the network
+void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<double>> training_outputs, double alpha, double stop_crit, string path)
+{
+
+	vector<double> cost_vect = {};
+
+    // perform training
+	do 
+	{
+		// initialize training
+		init();
+
+		for (size_t i = 0; i < training_inputs.size(); ++i)
+		{
+			back_propagation_step(training_inputs[i], training_outputs[i]);
+			cost(training_outputs[i]);
+		}
+
+		m_cost = m_cost / ((float)m_training_num);
+		cost_vect.push_back(m_cost);
+
+		// printing cost_vect
+		ofstream file(path.c_str());
+
+		if (file)
+		{
+			for (size_t j = 0; j < cost_vect.size(); ++j)
+			{
+				file << j << ", " << cost_vect[j] << endl;
+			}
+		}
+		else
+		{
+			cout << "ERROR can't open file in " << path.c_str() << endl;
+		}
+
+		// compute gradients from back prop algorithm
+		back_prop_grads();
+
+		// modify network's weights using gradient descent
+		gradient_descent(alpha);
+
+
+	} while (m_cost >= stop_crit);
+	
+
+	
+}
+
+
+
+// get m_cost
+double Back_prop::get_cost()
+{
+	return m_cost;
+}
