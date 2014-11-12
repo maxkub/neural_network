@@ -73,7 +73,7 @@ void Neuron::compute()
 	// Using sigmoid
 	if (H <= -20.) // to prevent overflow problems
 	{
-		m_output = -1.;
+		m_output = 0.;
 	}
 	else if (H >= 20.) // to prevent overflow problems
 	{
@@ -81,7 +81,7 @@ void Neuron::compute()
 	}
 	else 
 	{
-		m_output = 2. / (1 + exp(-H)) -1.;
+		m_output = 1. / (1 + exp(-H));
 	}
 
 	//m_output = 1. / (1 + exp(-H));

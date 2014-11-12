@@ -20,6 +20,7 @@ public:
 	void set_inputs(std::vector<double>& inputs);             // set m_inputs
 	void compute();                                           // compute the outputs of the layer: m_outputs
 	void print_outputs();                                     // print m_outputs on screen 
+	void print_inputs();                                      // print m_inputs on screen
 	std::vector<double> get_outputs();                        // get m_outputs
 	std::vector<double> get_weights();                        // get m_allWeights
 

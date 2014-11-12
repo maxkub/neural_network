@@ -81,7 +81,7 @@ void Network::set_inputs(vector<double>& inputs)
 	if (inputs.size() == m_input_size) 
 	{
 		m_inputs = inputs;
-		m_inputs.push_back(1.); // insert offset value in the vector's tail
+		m_inputs.push_back(1.); // insert bias value in the vector's tail
 	}
 	else 
 	{
@@ -139,6 +139,7 @@ void Network::forward_prop()
 
 	if (m_prints == 1)
 	{
+		m_network[0].print_inputs();
 		m_network[0].print_outputs();
 	}
 
@@ -147,13 +148,14 @@ void Network::forward_prop()
 	{
 
 		vect = m_network[i - 1].get_outputs();
-		vect.push_back(1.); // adding offset value in vector's tail
+		//vect.push_back(1.); // adding offset value in vector's tail
 
 		m_network[i].set_inputs(vect);
 		m_network[i].compute();
 
 		if (m_prints == 1)
 		{
+			m_network[i].print_inputs();
 			m_network[i].print_outputs();
 		}
 	}

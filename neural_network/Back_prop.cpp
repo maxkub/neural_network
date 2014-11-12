@@ -3,6 +3,7 @@
 #include <iostream>
 #include "F:/Projets-C++/neural_network/neural_network/Back_prop.h"
 #include "F:/Projets-C++/neural_network/neural_network/Neural_Network.h"
+#include <math.h>
 
 using namespace std;
 
@@ -179,7 +180,7 @@ void Back_prop::cost(vector<double>& training_outputs)
 
 
 // Automatic training of the network
-void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<double>> training_outputs, double alpha, double stop_crit, string path)
+void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<double>>& training_outputs, double alpha, double stop_crit, string path)
 {
 
 	m_cost_vect = {};
@@ -213,7 +214,7 @@ void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<
 		}
 		else
 		{
-			cout << "ERROR can't open file in " << path.c_str() << endl;
+			cout << "ERROR in Back_prop : can't open file in " << path.c_str() << endl;
 		}
 
 		// compute gradients from back prop algorithm
@@ -229,6 +230,35 @@ void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<
 	
 }
 
+// compute gradients with finite difference
+void Back_prop::gradient_check_step(vector<double>& training_inputs, vector<double>& training_outputs, double epsilon)
+{
+
+	vector<vector<double>> weights_minus;
+	vector<vector<double>> weights_plus;
+
+	Network network_min = m_network;
+	Network network_max = m_network;
+
+	for (size_t i = 0; i < m_net_weights.size(); ++i)
+	{
+		
+		for (size_t j = 0;j<m_net_weights[i].size(); ++j)
+		{
+			weights_minus[i][j] = m_net_weights[i][j] - epsilon;
+			weights_plus[i][j]  = m_net_weights[i][j] + epsilon;
+		}
+	}
+
+	network_min.set_allWeights(weights_minus);
+	network_min.forward_prop();
+
+
+	m_cost_vect = {};
+
+
+}
+
 
 
 // get m_cost
@@ -241,4 +271,11 @@ double Back_prop::get_cost()
 vector<double> Back_prop::get_cost_vect()
 {
 	return m_cost_vect;
+}
+
+
+// getting all weights
+vector<vector<double>> Back_prop::get_mod_weights()
+{
+	return m_net_weights;
 }

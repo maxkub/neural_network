@@ -28,7 +28,7 @@ void Layer::build_layer(default_random_engine& generator)
 	m_inputs.assign(m_Ninputs, 1.);
 
 	//initialization of the output vector
-	m_outputs.assign(m_Nneurons, 0.);
+	m_outputs.assign(m_Nneurons+1, 1.); // with the bias unit
 
 
 	for (int i = 0; i < m_Nneurons; ++i)
@@ -104,10 +104,11 @@ void Layer::set_allWeights(vector<double>& weights)
 // seting input vector
 void Layer::set_inputs(vector<double>& inputs)
 {
+	m_inputs = inputs;
 
 	for (int i = 0; i < m_Nneurons; ++i)
 	{
-		m_layer[i].set_inputs(inputs);
+		m_layer[i].set_inputs(m_inputs);
 	}
 }
 
@@ -120,18 +121,33 @@ void Layer::compute()
 		m_outputs[i] = m_layer[i].get_output();
 	}
 
-	m_outputs.push_back(1.); // adding the bias unit
+	//m_outputs.push_back(1.); // adding the bias unit
 }
 
 // print output of all neurons in layer
 void Layer::print_outputs()
 {
 
-	cout << " layer_id = " << m_layer_id << ": ";
+	cout << " layer_id out = " << m_layer_id << ": ";
 
-	for (int i = 0; i < m_Nneurons; ++i)
+	for (auto x : m_outputs)
 	{
-		cout << m_layer[i].get_output() << " " ;
+		cout << x << " ";
+	}
+
+	cout << endl;
+}
+
+
+// print output of all neurons in layer
+void Layer::print_inputs()
+{
+
+	cout << " layer_id in  = " << m_layer_id << ": ";
+
+	for (auto x : m_inputs)
+	{
+		cout << x << " ";
 	}
 
 	cout << endl;
