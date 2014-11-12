@@ -29,6 +29,7 @@ public:
 	void load(std::string& path);   // loading the last saved state in training
 	
 	double get_cost();
+	std::vector<double> get_cost_vect();
 
 private:
 
@@ -38,6 +39,7 @@ private:
 
 	int m_training_num;     // number of training examples (is updated after each successfull back_propagation)
 	double m_cost;          // value of cost function on the training set
+	std::vector<double> m_cost_vect;
 	double m_lambda;        // regularization parameter
 	std::vector<std::vector<double>> m_Deltas;  // array of Deltas for back prop (size = (Neurons * Ninputs : unrolled) * Nlayer)
 	std::vector<std::vector<double>> m_Dvect;   // vectors (for all layer) of the derivatives computed with back prop algorithm (size = (Neurons * Ninputs : unrolled) * Nlayer)

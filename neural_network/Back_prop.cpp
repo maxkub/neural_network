@@ -162,7 +162,7 @@ void Back_prop::cost(vector<double>& training_outputs)
 void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<double>> training_outputs, double alpha, double stop_crit, string path)
 {
 
-	vector<double> cost_vect = {};
+	m_cost_vect = {};
 
     // perform training
 	do 
@@ -177,16 +177,16 @@ void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<
 		}
 
 		m_cost = m_cost / ((float)m_training_num);
-		cost_vect.push_back(m_cost);
+		m_cost_vect.push_back(m_cost);
 
 		// printing cost_vect
 		ofstream file(path.c_str());
 
 		if (file)
 		{
-			for (size_t j = 0; j < cost_vect.size(); ++j)
+			for (size_t j = 0; j < m_cost_vect.size(); ++j)
 			{
-				file << j << ", " << cost_vect[j] << endl;
+				file << j << ", " << m_cost_vect[j] << endl;
 			}
 		}
 		else
@@ -213,4 +213,10 @@ void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<
 double Back_prop::get_cost()
 {
 	return m_cost;
+}
+
+// get m_cost_vect
+vector<double> Back_prop::get_cost_vect()
+{
+	return m_cost_vect;
 }
