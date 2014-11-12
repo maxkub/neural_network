@@ -36,6 +36,9 @@
     <ClCompile Include="Neural_Network.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Grad_check.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Neuron.h">
@@ -56,5 +59,11 @@
     <ClInclude Include="Neural_Network.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Grad_check.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

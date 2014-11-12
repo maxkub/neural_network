@@ -34,8 +34,9 @@ void Back_prop::init()
 		m_Deltas[i].assign(m_Deltas[i].size(), 0.);
 	}
 
-	m_Dvect = m_Deltas; 
+	m_Dvect = m_Deltas;
 	m_grads = m_Deltas;
+
 	
 }
 
@@ -73,27 +74,33 @@ void Back_prop::back_propagation_step(vector<double>& training_inputs, vector<do
 
 		temp_d.clear();
 
-		for (int j = 0; j <= m_scheme[i] ; ++j) // loop on neurons in layer l (with the bias)
+		//cout << endl;
+
+		for (int j = 0; j <= m_scheme[i]; ++j) // loop on neurons in layer l (with the bias)
 		{
 
 			sum = 0.;
 
-			for (int k = 0; k < m_scheme[i+1]; ++k) // loop on neurons in layer l+1 (without the bias)
+			for (int k = 0; k < m_scheme[i + 1]; ++k) // loop on neurons in layer l+1 (without the bias)
 			{
-				sum += deltas[it][k] * m_net_weights[i][k*m_scheme[i]];
+				//cout << " ..." << i << " " << j << " " << k << " " << k*(m_scheme[i] + 1) + j << endl;
+				sum += deltas[it][k] * m_net_weights[i][k*(m_scheme[i] + 1) + j];
 			}
 
-			int num = i-1;
+			int num = i - 1;
 			layer_outputs = m_network.get_layer_outputs(num);
 
 			temp_d.push_back(sum*layer_outputs[j] * (1. - layer_outputs[j]));
 
-	
+
 		}
 
 		deltas.push_back(temp_d);
 		++it;
 	}
+
+
+	//cout << "end deltas \n";
 
 	// compute Deltas array
 	for (size_t i = 0; i < m_net_weights.size(); ++i)
@@ -116,9 +123,11 @@ void Back_prop::back_propagation_step(vector<double>& training_inputs, vector<do
 		{
 			for (int k = 0; k <= m_scheme[i]; ++k) // loop on neurons in layer l (with bias unit)
 			{
-				//cout << "i, j, k, it : " << i << j << k << it << endl;
 				//cout << "m_deltas[i].size = " << m_Deltas[i].size() << endl;
 				//cout << "layer_output.size = " << layer_outputs.size() << endl;
+
+				//cout << "D.. " << i << " " << j << " " << k << " " << m_scheme.size() - 2 - i << endl;
+				
 				m_Deltas[i][it] += deltas[m_scheme.size() - 2 - i][j] * layer_outputs[k];
 
 				++it;
@@ -144,7 +153,7 @@ void Back_prop::back_prop_grads()
 
 		for (size_t j = 0; j < m_Dvect[i].size(); ++j)
 		{
-			m_Dvect[i][j] = 1. / ((float)m_training_num)*m_Deltas[i][j] + m_lambda*m_net_weights[i][j];
+			m_Dvect[i][j] = 1. / ((float)m_training_num)*m_Deltas[i][j]; //+ m_lambda*m_net_weights[i][j];
 
 		}
 	}
@@ -167,9 +176,9 @@ void Back_prop::gradient_descent(double alpha)
 }
 
 // compute cost function
-void Back_prop::cost(vector<double>& training_outputs)
+void Back_prop::cost(vector<double>& net_outputs, vector<double>& training_outputs)
 {
-	vector<double> net_outputs = m_network.get_outputs();
+	//vector<double> net_outputs = m_network.get_outputs();
 
 	for (int i = 0; i < m_scheme.back(); ++i)
 	{
@@ -183,20 +192,25 @@ void Back_prop::cost(vector<double>& training_outputs)
 void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<double>>& training_outputs, double alpha, double stop_crit, string path)
 {
 
+	// init
 	m_cost_vect = {};
 
     // perform training
+	int it = 0;
 	do 
 	{
-		// initialize training
+		// re-initialize training
 		init();
 
+		// loop on the training set
 		for (size_t i = 0; i < training_inputs.size(); ++i)
 		{
 			cout << endl;
 			cout << " training : " << i << endl;
 			back_propagation_step(training_inputs[i], training_outputs[i]);
-			cost(training_outputs[i]);
+
+			vector<double> net_outputs = m_network.get_outputs();
+			cost(net_outputs, training_outputs[i]);
 		}
 
 		m_cost = m_cost / ((float)m_training_num);
@@ -223,41 +237,14 @@ void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<
 		// modify network's weights using gradient descent
 		gradient_descent(alpha);
 
+		++it;
 
-	} while (m_cost >= stop_crit);
+	} while (m_cost >= stop_crit && it <= 2);
 	
 
 	
 }
 
-// compute gradients with finite difference
-void Back_prop::gradient_check_step(vector<double>& training_inputs, vector<double>& training_outputs, double epsilon)
-{
-
-	vector<vector<double>> weights_minus;
-	vector<vector<double>> weights_plus;
-
-	Network network_min = m_network;
-	Network network_max = m_network;
-
-	for (size_t i = 0; i < m_net_weights.size(); ++i)
-	{
-		
-		for (size_t j = 0;j<m_net_weights[i].size(); ++j)
-		{
-			weights_minus[i][j] = m_net_weights[i][j] - epsilon;
-			weights_plus[i][j]  = m_net_weights[i][j] + epsilon;
-		}
-	}
-
-	network_min.set_allWeights(weights_minus);
-	network_min.forward_prop();
-
-
-	m_cost_vect = {};
-
-
-}
 
 
 

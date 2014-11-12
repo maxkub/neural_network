@@ -21,11 +21,11 @@ public:
 
 	void back_prop_grads();                      // compute gradients using the results of back_propagation, using m_Deltas
 
-	void gradient_check_step(vector<double>& training_inputs, vector<double>& training_outputs, double epsilon);  // check the gradients using finite difference method
+	//void gradient_check_step(vector<double>& training_inputs, vector<double>& training_outputs, double epsilon);  // check the gradients using finite difference method
 
 	void gradient_descent(double alpha);         // perform gradient descent using m_Dvect
 
-	void cost(std::vector<double>& training_outputs); // compute cost function : to use once the whole training set has been used
+	void cost(std::vector<double>& net_outputs, std::vector<double>& training_outputs); // compute cost function //: to use once the whole training set has been used
 
 	void training(std::vector<std::vector<double>>& training_inputs, std::vector<std::vector<double>>& training_outputs, double alpha, double stop_crit,
 		std::string path);  // automatic training of the network

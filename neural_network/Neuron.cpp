@@ -34,7 +34,7 @@ void Neuron::set_inputs(vector<double>& inputs)
 void Neuron::neurinit(default_random_engine& generator)
 {
 
-	uniform_real_distribution<double> distribution(-0.5, 0.5);
+	uniform_real_distribution<double> distribution(-5, 5);
 
 	//initialize with random weights
 	for (size_t i=0; i < m_inputs.size(); ++i)
