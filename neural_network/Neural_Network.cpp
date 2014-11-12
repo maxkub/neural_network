@@ -180,18 +180,6 @@ vector<vector<double>> Network::get_allWeights()
 }
 
 
-// Get m_input_size
-/*double Network::get_input_size()
-{
-	return m_input_size;
-}*/
-
-// Get m_Noutputs
-/*double Network::get_Noutputs()
-{
-	return m_Noutputs;
-}*/
-
 // Get outputs of layer id=num
 vector<double> Network::get_layer_outputs(int& num)
 {

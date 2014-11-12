@@ -60,7 +60,7 @@ void Back_prop::back_propagation_step(vector<double>& training_inputs, vector<do
 	temp_d.clear();
 	for (size_t i = 0; i < net_outputs.size(); ++i)
 	{
-		cout << "net_outputs.size = " << net_outputs.size() << endl;
+		//cout << "net_outputs.size = " << net_outputs.size() << endl;
 		temp_d.push_back( (net_outputs[i] - training_outputs[i])*net_outputs[i]*(1.-net_outputs[i]) );
 	}
 
@@ -199,14 +199,18 @@ void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<
 	int it = 0;
 	do 
 	{
+
+		cout << " training : " << it << endl;
+
 		// re-initialize training
 		init();
 
 		// loop on the training set
 		for (size_t i = 0; i < training_inputs.size(); ++i)
 		{
-			cout << endl;
-			cout << " training : " << i << endl;
+			//cout << endl;
+			//cout << " training : " << i << endl;
+
 			back_propagation_step(training_inputs[i], training_outputs[i]);
 
 			vector<double> net_outputs = m_network.get_outputs();
@@ -239,7 +243,7 @@ void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<
 
 		++it;
 
-	} while (m_cost >= stop_crit && it <= 2);
+	} while (m_cost >= stop_crit && it <= 100);
 	
 
 	
