@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include <fstream>
 #include <iostream>
-#include "Back_prop.h"
-#include "Neural_Network.h"
+#include "F:/Projets-C++/neural_network/neural_network/Back_prop.h"
+#include "F:/Projets-C++/neural_network/neural_network/Neural_Network.h"
 
 using namespace std;
 
@@ -55,14 +55,19 @@ void Back_prop::back_propagation_step(vector<double>& training_inputs, vector<do
 	net_outputs = m_network.get_outputs();
 
 	// compute the error terms of the output layer
+	temp_d.clear();
 	for (size_t i = 0; i < net_outputs.size(); ++i)
 	{
-		deltas[0].push_back( (net_outputs[i] - training_outputs[i])*net_outputs[i]*(1.-net_outputs[i]) );
+		cout << "net_outputs.size = " << net_outputs.size() << endl;
+		temp_d.push_back( (net_outputs[i] - training_outputs[i])*net_outputs[i]*(1.-net_outputs[i]) );
 	}
+
+	deltas.push_back(temp_d);
 
 
 	// compute the error terms of the earlier layers
-	for (size_t i = m_scheme.size() - 1; i-- > 0;) // reverse loop on layers
+	int it = 0;
+	for (size_t i = m_scheme.size() - 1; --i > 0;) // reverse loop on layers
 	{
 
 		temp_d.clear();
@@ -74,10 +79,10 @@ void Back_prop::back_propagation_step(vector<double>& training_inputs, vector<do
 
 			for (int k = 0; k < m_scheme[i+1]; ++k) // loop on neurons in layer l+1 (without the bias)
 			{
-				sum += deltas[i][k] * m_net_weights[i][k*m_scheme[i]];
+				sum += deltas[it][k] * m_net_weights[i][k*m_scheme[i]];
 			}
 
-			int num = i + 1;
+			int num = i-1;
 			layer_outputs = m_network.get_layer_outputs(num);
 
 			temp_d.push_back(sum*layer_outputs[j] * (1. - layer_outputs[j]));
@@ -86,21 +91,36 @@ void Back_prop::back_propagation_step(vector<double>& training_inputs, vector<do
 		}
 
 		deltas.push_back(temp_d);
+		++it;
 	}
 
 	// compute Deltas array
 	for (size_t i = 0; i < m_net_weights.size(); ++i)
 	{
-		int num = i + 1;
-		layer_outputs = m_network.get_layer_outputs(num);
-
-		for (int j = 0; j <= m_scheme[i]; ++j) // loop on neurons in layer l (with bias unit)
+		
+		if (i == 0)
 		{
+			layer_outputs = training_inputs;
+			layer_outputs.push_back(1.); // adding bias unit
+		}
+		else
+		{
+			int num = i - 1;
+			layer_outputs = m_network.get_layer_outputs(num);
+		}
+		
 
-			for (int k = 0; k < m_scheme[i + 1]; ++k) // loop on neurons in layer l+1 (without bias unit)
+		int it = 0;
+		for (int j = 0; j < m_scheme[i+1]; ++j) // loop on neurons in layer l+1 (without bias unit)
+		{
+			for (int k = 0; k <= m_scheme[i]; ++k) // loop on neurons in layer l (with bias unit)
 			{
-				int num = k*m_scheme[i + 1] + j;
-				m_Deltas[i][num] += layer_outputs[j]*deltas[m_scheme.size() - 2 - i][j];
+				//cout << "i, j, k, it : " << i << j << k << it << endl;
+				//cout << "m_deltas[i].size = " << m_Deltas[i].size() << endl;
+				//cout << "layer_output.size = " << layer_outputs.size() << endl;
+				m_Deltas[i][it] += deltas[m_scheme.size() - 2 - i][j] * layer_outputs[k];
+
+				++it;
 			}
 			
 		}
@@ -172,6 +192,8 @@ void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<
 
 		for (size_t i = 0; i < training_inputs.size(); ++i)
 		{
+			cout << endl;
+			cout << " training : " << i << endl;
 			back_propagation_step(training_inputs[i], training_outputs[i]);
 			cost(training_outputs[i]);
 		}

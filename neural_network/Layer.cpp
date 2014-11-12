@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include <iostream>
 #include <random>
-#include "Layer.h"
+#include "F:/Projets-C++/neural_network/neural_network/Layer.h"
 #include <vector>
-#include "Neuron.h"
+#include "F:/Projets-C++/neural_network/neural_network/Neuron.h"
 
 
 using namespace std;
@@ -119,6 +119,8 @@ void Layer::compute()
 		m_layer[i].compute();
 		m_outputs[i] = m_layer[i].get_output();
 	}
+
+	m_outputs.push_back(1.); // adding the bias unit
 }
 
 // print output of all neurons in layer

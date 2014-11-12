@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include <vector>
-#include "Neuron.h"
+#include "F:/Projets-C++/neural_network/neural_network/Neuron.h"
 
 
 class Layer
@@ -34,7 +34,7 @@ private:
 
 	std::vector<double> m_allWeights;   // vector of unrolled weights of the layer (size = m_Ninputs * m_Nneurons)
 	std::vector<double> m_inputs;       // vector of inputs (size = m_Ninputs)
-	std::vector<double> m_outputs;      // vector of outputs of the layer (size = m_Nneurons)
+	std::vector<double> m_outputs;      // vector of outputs of the layer (size = m_Nneurons + 1 bias unit)
 
 	Neuron * m_layer = new Neuron[m_Nneurons]; // vector of neurons = the layer (size = m_Nneurons)
 };

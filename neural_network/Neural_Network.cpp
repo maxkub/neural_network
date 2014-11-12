@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "Neural_Network.h"
+#include "F:/Projets-C++/neural_network/neural_network/Neural_Network.h"
 #include <vector>
 #include <iostream>
 #include <random>
 #include <chrono>
-#include "Neuron.h"
-#include "Layer.h"
+#include "F:/Projets-C++/neural_network/neural_network/Neuron.h"
+#include "F:/Projets-C++/neural_network/neural_network/Layer.h"
 
 
 using namespace std;
@@ -98,21 +98,31 @@ void Network::set_inputs(vector<double>& inputs)
 void Network::set_allWeights(vector<vector<double>>& weights)
 {
 
-	for (int i = 0; i <= m_Nlayers; ++i)
+	if (weights.size() == m_allweights.size())
 	{
-		if (weights[i].size() == m_allweights[i].size())
+		for (int i = 0; i <= m_Nlayers; ++i)
 		{
-			m_allweights[i] = weights[i];
-			m_network[i].set_allWeights(weights[i]);
-		}
-		else
-		{
-			cout << "ERROR : wrong size in network weights, layer id = " << i + 1 << endl;
-			cout << "weights[id] size      = " << weights[i].size() << endl;
-			cout << "m_allweights[id] size = " << m_allweights[i].size() << endl;
-			exit(1);
-		}
+			if (weights[i].size() == m_allweights[i].size())
+			{
+				m_allweights[i] = weights[i];
+				m_network[i].set_allWeights(weights[i]);
+			}
+			else
+			{
+				cout << "ERROR : wrong size in network weights, layer id = " << i + 1 << endl;
+				cout << "weights[id] size      = " << weights[i].size() << endl;
+				cout << "m_allweights[id] size = " << m_allweights[i].size() << endl;
+				exit(1);
+			}
+	    }
 		
+	}
+	else
+	{
+		cout << "ERROR : wrong size in network weights, number of layers " << endl;
+		cout << "weights.size      = " << weights.size() << endl;
+		cout << "m_allweights.size = " << m_allweights.size() << endl;
+		exit(1);
 	}
 }
 
@@ -149,6 +159,7 @@ void Network::forward_prop()
 	}
 
 	m_outputs = m_network[m_Nlayers].get_outputs();
+	m_outputs.pop_back(); // removing the bias unit from the outputs of the output layer
 	
 
 }

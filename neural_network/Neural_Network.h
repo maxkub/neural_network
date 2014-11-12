@@ -3,8 +3,8 @@
 
 #include "stdafx.h"
 #include <vector>
-#include "Neuron.h"
-#include "Layer.h"
+#include "F:/Projets-C++/neural_network/neural_network/Neuron.h"
+#include "F:/Projets-C++/neural_network/neural_network/Layer.h"
 
 class Network
 {
