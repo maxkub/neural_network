@@ -194,6 +194,7 @@ void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<
 
 	// init
 	m_cost_vect = {};
+	double test = stop_crit +1.;
 
     // perform training
 	int it = 0;
@@ -241,9 +242,14 @@ void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<
 		// modify network's weights using gradient descent
 		gradient_descent(alpha);
 
+		if (it >= 3)
+		{
+			test = abs(m_cost_vect.back() - m_cost_vect[it - 1]);
+		}
+
 		++it;
 
-	} while (m_cost >= stop_crit && it <= 100);
+	} while ( test >= stop_crit && it <= 3000);
 	
 
 	
