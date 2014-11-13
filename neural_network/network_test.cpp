@@ -16,9 +16,9 @@ int main()
 
 
 
-	Network network(scheme);
+	Network network;
 
-	network.build_network();
+	network.build_network(scheme, 1 , 0);
 
 	weights = network.get_allWeights();
 
@@ -62,6 +62,16 @@ int main()
 	{
 		cout << outputs[i] << endl;
 	}
+
+
+	string path = "F:/Neural_networks_dat/weights_test.dat";
+	network.save(path);
+
+	Network network2;
+	network2.import(path, 1);
+
+	path = "F:/Neural_networks_dat/weights_test2.dat";
+	network2.save(path);
 
 
 	return 0;

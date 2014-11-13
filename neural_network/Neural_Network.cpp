@@ -2,6 +2,9 @@
 #include "F:/Projets-C++/neural_network/neural_network/Neural_Network.h"
 #include <vector>
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
 #include <random>
 #include <chrono>
 #include "F:/Projets-C++/neural_network/neural_network/Neuron.h"
@@ -16,7 +19,7 @@ using namespace std;
 {
 }*/
 
-Network::Network(vector<int>& scheme, int print) : m_scheme(scheme), m_input_size(scheme[0]), m_prints(print)
+Network::Network()
 {
 }
 
@@ -27,8 +30,13 @@ Network::~Network()
 
 
 // set network
-void Network::build_network(int seed)
+void Network::build_network(vector<int>& scheme, int print, int seed)
 {
+
+	//set scheme
+	m_scheme = scheme;
+	m_input_size = scheme[0];
+	m_prints = print;
 
 	// create random number generator
 	default_random_engine generator;
@@ -191,4 +199,91 @@ vector<double> Network::get_layer_outputs(int& num)
 vector<int> Network::get_scheme()
 {
 	return m_scheme;
+}
+
+
+
+
+// saving the network : scheme and weights
+void Network::save(string path)
+{
+
+	ofstream file(path.c_str());
+
+	if (file)
+	{
+		for (auto s : m_scheme)
+		{
+			file << s << " ";
+		}
+
+		file << endl;
+
+		for (size_t i = 0; i < m_allweights.size(); ++i)
+		{
+			for (size_t j = 0; j < m_allweights[i].size(); ++j)
+			{
+				file << m_allweights[i][j] << " ";
+			}
+			file << endl;
+		}
+	}
+	else
+	{
+		cout << "ERROR : in Network.save() , can't open file : " << path.c_str() << endl;
+	}
+}
+
+
+// Importing a saved network, and building it
+void Network::import(string path, int print)
+{
+	ifstream file(path.c_str());
+
+	if (file)
+	{
+
+		vector<double> temp;
+		string input;
+		double w;
+		int a;
+
+		//importing network scheme
+		getline(file, input);
+
+		stringstream ss(input);
+
+		while (ss >> a)
+		{
+			m_scheme.push_back(a);
+		}
+
+		// building network
+		build_network(m_scheme, print);
+		m_allweights.clear();
+		
+	    // reading weights
+		while (getline(file, input))
+		{
+			stringstream ss(input);
+
+			temp.clear();
+
+			while (ss >> w)
+			{
+				temp.push_back(w);
+			}
+
+			m_allweights.push_back(temp);
+		}
+
+		// setting network weights
+		set_allWeights(m_allweights);
+
+	}
+	else
+	{
+		cout << "ERROR : in Network.import() , can't open file : " << path.c_str() << endl;
+	}
+
 }

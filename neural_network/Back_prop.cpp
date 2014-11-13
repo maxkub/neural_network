@@ -249,7 +249,7 @@ void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<
 
 		++it;
 
-	} while ( test >= stop_crit && it <= 3000);
+	} while (test >= stop_crit && it <= 3000);
 	
 
 	

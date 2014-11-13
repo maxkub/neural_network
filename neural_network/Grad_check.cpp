@@ -62,7 +62,9 @@ void Grad_check::training(vector<vector<double>>& training_inputs, vector<vector
 			cout << endl;
 			cout << " training : " << i << endl;
 			grad_step(training_inputs[i], training_outputs[i]);
-			cost(training_outputs[i]);
+
+			vector<double> net_outputs = m_network.get_outputs();
+			cost(net_outputs, training_outputs[i]);
 		}
 
 		m_cost = m_cost / ((float)m_training_num);

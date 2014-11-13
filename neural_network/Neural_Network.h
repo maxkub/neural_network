@@ -12,11 +12,11 @@ class Network
 public:
 
 	//constructor
-	Network(std::vector<int>& scheme, int print = 0);
+	Network();
 	~Network();
 
 	//methods
-	void build_network(int seed=0);
+	void build_network(std::vector<int>& scheme, int print = 0, int seed = 0);
 	void set_allWeights(std::vector<std::vector<double>>& weights);
 	void set_inputs(std::vector<double>& inputs);
 	void forward_prop();
@@ -24,14 +24,12 @@ public:
 	std::vector<double> get_outputs();
 	std::vector<std::vector<double>> get_allWeights();
 
-	//double get_input_size();
-	//double get_Noutputs();
 
 	std::vector<double> get_layer_outputs(int& num);
 	std::vector<int> get_scheme();
 
 	void save(std::string path); // saving the network (scheme and weights)
-	void load(std::string path); // loading a network (scheme and weights)
+	void import(std::string path, int print=0); // loading a network (scheme and weights), and build it
 
 private:
 
