@@ -25,7 +25,9 @@ public:
 
 	void gradient_descent(double alpha);         // perform gradient descent using m_Dvect
 
-	void cost(std::vector<double>& net_outputs, std::vector<double>& training_outputs); // compute cost function //: to use once the whole training set has been used
+	void cost_sum(std::vector<double>& net_outputs, std::vector<double>& training_outputs); // sum cost function terms
+
+	void cost(); // compute cost function, with regularization terms
 
 	void training(std::vector<std::vector<double>>& training_inputs, std::vector<std::vector<double>>& training_outputs, double alpha, double stop_crit,
 		std::string path);  // automatic training of the network

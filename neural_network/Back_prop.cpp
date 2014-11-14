@@ -153,8 +153,7 @@ void Back_prop::back_prop_grads()
 
 		for (size_t j = 0; j < m_Dvect[i].size(); ++j)
 		{
-			m_Dvect[i][j] = 1. / ((float)m_training_num)*m_Deltas[i][j]; //+ m_lambda*m_net_weights[i][j];
-
+			m_Dvect[i][j] = 1. / ((float)m_training_num)*m_Deltas[i][j] + m_lambda*m_net_weights[i][j];
 		}
 	}
 }
@@ -176,7 +175,7 @@ void Back_prop::gradient_descent(double alpha)
 }
 
 // compute cost function
-void Back_prop::cost(vector<double>& net_outputs, vector<double>& training_outputs)
+void Back_prop::cost_sum(vector<double>& net_outputs, vector<double>& training_outputs)
 {
 	//vector<double> net_outputs = m_network.get_outputs();
 
@@ -186,6 +185,24 @@ void Back_prop::cost(vector<double>& net_outputs, vector<double>& training_outpu
 	}
 }
 
+
+//compute cost on training set with regularization terms
+void Back_prop::cost()
+{
+
+	double regul_term=0.;
+
+	for (auto c : m_net_weights)
+	{
+		for (auto w : c)
+		{
+			regul_term += w*w;
+		}
+	}
+
+	m_cost = m_cost/((float)m_training_num) + m_lambda / ((float)m_training_num * 2.) * regul_term;
+
+}
 
 
 // Automatic training of the network
@@ -215,10 +232,10 @@ void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<
 			back_propagation_step(training_inputs[i], training_outputs[i]);
 
 			vector<double> net_outputs = m_network.get_outputs();
-			cost(net_outputs, training_outputs[i]);
+			cost_sum(net_outputs, training_outputs[i]);
 		}
 
-		m_cost = m_cost / ((float)m_training_num);
+		cost();
 		m_cost_vect.push_back(m_cost);
 
 		// printing cost_vect
