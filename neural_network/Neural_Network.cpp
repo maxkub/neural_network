@@ -1,11 +1,9 @@
-#include "stdafx.h"
+
 #include "Neural_Network.h"
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <sstream>
-#include <random>
 #include <chrono>
 #include "Layer.h"
 
@@ -13,276 +11,276 @@
 using namespace std;
 
 
-// contructor
-/*Network::Network(int& Ninputs, int& Noutputs, int& Nrows, int& Nlayers, int print) : m_input_size(Ninputs), m_Noutputs(Noutputs), m_Nrows(Nrows), m_Nlayers(Nlayers), m_prints(print)
-{
-}*/
-
-Network::Network()
-{
-}
-
-//destructor
-Network::~Network()
-{
-}
-
-
-// set network
-void Network::build_network(vector<int>& scheme, int print, int seed)
+namespace NeuralNetwork
 {
 
-	//set scheme
-	m_scheme = scheme;
-	m_input_size = scheme[0];
-	m_prints = print;
-
-	// create random number generator
-	default_random_engine generator;
-
-	if (seed == 0)
+	Network::Network()
 	{
-		int lseed = chrono::system_clock::now().time_since_epoch().count();
-		generator.seed(lseed);
 	}
-	else
+
+	//destructor
+	Network::~Network()
 	{
-		generator.seed(seed);
 	}
 
 
-	m_input_size = m_scheme[0];
-	m_Noutputs   = m_scheme.back();
-	m_Nlayers    = m_scheme.size() - 2; // -Input -output
-
-
-
-	for (size_t i = 1; i <= m_scheme.size()-1; ++i)
+	// set network
+	void Network::build_network(vector<int>& scheme, int print, int seed)
 	{
-		Layer layer(m_scheme[i-1] + 1, m_scheme[i], i);
-		layer.build_layer(generator);
 
-		m_network.push_back(layer);
-	}
+		//set scheme
+		m_scheme = scheme;
+		m_input_size = scheme[0];
+		m_prints = print;
 
-	cout << "end build" << endl;
+		// create random number generator
+		default_random_engine generator;
 
-	unrolled_weights();
-
-	
-}
-
-// unrolling layers weights
-void Network::unrolled_weights()
-{
-	for (size_t i = 0; i < m_scheme.size()-1; ++i)
-	{
-		m_allweights.push_back(m_network[i].get_weights());
-	}
-}
-
-
-// set inputs
-void Network::set_inputs(vector<double>& inputs)
-{
-	if (inputs.size() == m_input_size) 
-	{
-		m_inputs = inputs;
-		m_inputs.push_back(1.); // insert bias value in the vector's tail
-	}
-	else 
-	{
-		cout << "ERROR: wrong input size for network \n";
-		cout << "m_inputs size = " << m_inputs.size() << endl;
-		cout << "inputs size   = " << inputs.size() << endl;
-	    exit(1);
-	}
-	
-
-}
-
-// Set the same value for all coeffcients
-void Network::set_allWeights(vector<vector<double>>& weights)
-{
-
-	if (weights.size() == m_allweights.size())
-	{
-		for (int i = 0; i <= m_Nlayers; ++i)
+		if (seed == 0)
 		{
-			if (weights[i].size() == m_allweights[i].size())
+			int lseed = chrono::system_clock::now().time_since_epoch().count();
+			generator.seed(lseed);
+		}
+		else
+		{
+			generator.seed(seed);
+		}
+
+
+		m_input_size = m_scheme[0];
+		m_Noutputs = m_scheme.back();
+		m_Nlayers = m_scheme.size() - 2; // -Input -output
+
+
+
+		for (size_t i = 1; i <= m_scheme.size() - 1; ++i)
+		{
+			Layer layer(m_scheme[i - 1] + 1, m_scheme[i], i);
+			layer.build_layer(generator);
+
+			m_network.push_back(layer);
+		}
+
+		cout << "end build" << endl;
+
+		unrolled_weights();
+
+
+	}
+
+	// unrolling layers weights
+	void Network::unrolled_weights()
+	{
+		for (size_t i = 0; i < m_scheme.size() - 1; ++i)
+		{
+			m_allweights.push_back(m_network[i].get_weights());
+		}
+	}
+
+
+	// set inputs
+	void Network::set_inputs(vector<double>& inputs)
+	{
+		if (inputs.size() == m_input_size)
+		{
+			m_inputs = inputs;
+			m_inputs.push_back(1.); // insert bias value in the vector's tail
+		}
+		else
+		{
+			cout << "ERROR: wrong input size for network \n";
+			cout << "m_inputs size = " << m_inputs.size() << endl;
+			cout << "inputs size   = " << inputs.size() << endl;
+			exit(1);
+		}
+
+
+	}
+
+	// Set the same value for all coeffcients
+	void Network::set_allWeights(vector<vector<double>>& weights)
+	{
+
+		if (weights.size() == m_allweights.size())
+		{
+			for (int i = 0; i <= m_Nlayers; ++i)
 			{
-				m_allweights[i] = weights[i];
-				m_network[i].set_allWeights(weights[i]);
+				if (weights[i].size() == m_allweights[i].size())
+				{
+					m_allweights[i] = weights[i];
+					m_network[i].set_allWeights(weights[i]);
+				}
+				else
+				{
+					cout << "ERROR : wrong size in network weights, layer id = " << i + 1 << endl;
+					cout << "weights[id] size      = " << weights[i].size() << endl;
+					cout << "m_allweights[id] size = " << m_allweights[i].size() << endl;
+					exit(1);
+				}
 			}
-			else
-			{
-				cout << "ERROR : wrong size in network weights, layer id = " << i + 1 << endl;
-				cout << "weights[id] size      = " << weights[i].size() << endl;
-				cout << "m_allweights[id] size = " << m_allweights[i].size() << endl;
-				exit(1);
-			}
-	    }
-		
-	}
-	else
-	{
-		cout << "ERROR : wrong size in network weights, number of layers " << endl;
-		cout << "weights.size      = " << weights.size() << endl;
-		cout << "m_allweights.size = " << m_allweights.size() << endl;
-		exit(1);
-	}
-}
 
-
-
-// Forward propagation
-void Network::forward_prop()
-{
-
-	vector<double> vect;
-
-	m_network[0].set_inputs(m_inputs);
-	m_network[0].compute();
-
-	if (m_prints == 1)
-	{
-		m_network[0].print_inputs();
-		m_network[0].print_outputs();
+		}
+		else
+		{
+			cout << "ERROR : wrong size in network weights, number of layers " << endl;
+			cout << "weights.size      = " << weights.size() << endl;
+			cout << "m_allweights.size = " << m_allweights.size() << endl;
+			exit(1);
+		}
 	}
 
 
-	for (int i = 1; i <= m_Nlayers; ++i)
+
+	// Forward propagation
+	void Network::forward_prop()
 	{
 
-		vect = m_network[i - 1].get_outputs();
-		//vect.push_back(1.); // adding offset value in vector's tail
+		vector<double> vect;
 
-		m_network[i].set_inputs(vect);
-		m_network[i].compute();
+		m_network[0].set_inputs(m_inputs);
+		m_network[0].compute();
 
 		if (m_prints == 1)
 		{
-			m_network[i].print_inputs();
-			m_network[i].print_outputs();
-		}
-	}
-
-	m_outputs = m_network[m_Nlayers].get_outputs();
-	m_outputs.pop_back(); // removing the bias unit from the outputs of the output layer
-	
-
-}
-
-
-// Get outputs
-vector<double> Network::get_outputs()
-{
-	return m_outputs;
-}
-
-// Get all weights in the network
-vector<vector<double>> Network::get_allWeights()
-{
-	return m_allweights;
-}
-
-
-// Get outputs of layer id=num
-vector<double> Network::get_layer_outputs(int& num)
-{
-	return m_network[num].get_outputs();
-}
-
-
-// Get network scheme
-vector<int> Network::get_scheme()
-{
-	return m_scheme;
-}
-
-
-
-
-// saving the network : scheme and weights
-void Network::save(string path)
-{
-
-	ofstream file(path.c_str());
-
-	if (file)
-	{
-		for (auto s : m_scheme)
-		{
-			file << s << " ";
+			m_network[0].print_inputs();
+			m_network[0].print_outputs();
 		}
 
-		file << endl;
 
-		for (size_t i = 0; i < m_allweights.size(); ++i)
+		for (int i = 1; i <= m_Nlayers; ++i)
 		{
-			for (size_t j = 0; j < m_allweights[i].size(); ++j)
+
+			vect = m_network[i - 1].get_outputs();
+			//vect.push_back(1.); // adding offset value in vector's tail
+
+			m_network[i].set_inputs(vect);
+			m_network[i].compute();
+
+			if (m_prints == 1)
 			{
-				file << m_allweights[i][j] << " ";
+				m_network[i].print_inputs();
+				m_network[i].print_outputs();
 			}
+		}
+
+		m_outputs = m_network[m_Nlayers].get_outputs();
+		m_outputs.pop_back(); // removing the bias unit from the outputs of the output layer
+
+
+	}
+
+
+	// Get outputs
+	vector<double> Network::get_outputs()
+	{
+		return m_outputs;
+	}
+
+	// Get all weights in the network
+	vector<vector<double>> Network::get_allWeights()
+	{
+		return m_allweights;
+	}
+
+
+	// Get outputs of layer id=num
+	vector<double> Network::get_layer_outputs(int& num)
+	{
+		return m_network[num].get_outputs();
+	}
+
+
+	// Get network scheme
+	vector<int> Network::get_scheme()
+	{
+		return m_scheme;
+	}
+
+
+
+
+	// saving the network : scheme and weights
+	void Network::save(string path)
+	{
+
+		ofstream file(path.c_str());
+
+		if (file)
+		{
+			for (auto s : m_scheme)
+			{
+				file << s << " ";
+			}
+
 			file << endl;
+
+			for (size_t i = 0; i < m_allweights.size(); ++i)
+			{
+				for (size_t j = 0; j < m_allweights[i].size(); ++j)
+				{
+					file << m_allweights[i][j] << " ";
+				}
+				file << endl;
+			}
+		}
+		else
+		{
+			cout << "ERROR : in Network.save() , can't open file : " << path.c_str() << endl;
 		}
 	}
-	else
+
+
+	// Importing a saved network, and building it
+	void Network::import(string path, int print)
 	{
-		cout << "ERROR : in Network.save() , can't open file : " << path.c_str() << endl;
-	}
-}
+		ifstream file(path.c_str());
 
-
-// Importing a saved network, and building it
-void Network::import(string path, int print)
-{
-	ifstream file(path.c_str());
-
-	if (file)
-	{
-
-		vector<double> temp;
-		string input;
-		double w;
-		int a;
-
-		//importing network scheme
-		getline(file, input);
-
-		stringstream ss(input);
-
-		while (ss >> a)
+		if (file)
 		{
-			m_scheme.push_back(a);
-		}
 
-		// building network
-		build_network(m_scheme, print);
-		m_allweights.clear();
-		
-	    // reading weights
-		while (getline(file, input))
-		{
+			vector<double> temp;
+			string input;
+			double w;
+			int a;
+
+			//importing network scheme
+			getline(file, input);
+
 			stringstream ss(input);
 
-			temp.clear();
-
-			while (ss >> w)
+			while (ss >> a)
 			{
-				temp.push_back(w);
+				m_scheme.push_back(a);
 			}
 
-			m_allweights.push_back(temp);
+			// building network
+			build_network(m_scheme, print);
+			m_allweights.clear();
+
+			// reading weights
+			while (getline(file, input))
+			{
+				stringstream ss(input);
+
+				temp.clear();
+
+				while (ss >> w)
+				{
+					temp.push_back(w);
+				}
+
+				m_allweights.push_back(temp);
+			}
+
+			// setting network weights
+			set_allWeights(m_allweights);
+
+		}
+		else
+		{
+			cout << "ERROR : in Network.import() , can't open file : " << path.c_str() << endl;
 		}
 
-		// setting network weights
-		set_allWeights(m_allweights);
-
 	}
-	else
-	{
-		cout << "ERROR : in Network.import() , can't open file : " << path.c_str() << endl;
-	}
-
 }
+
