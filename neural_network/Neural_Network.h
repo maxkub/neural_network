@@ -9,30 +9,30 @@
 namespace NeuralNetwork
 {
 
-	class __declspec(dllexport) Network
+	class Network
 	{
 
 	public:
 
 		//constructor
-		Network();
-		~Network();
+		__declspec(dllexport) Network();
+		__declspec(dllexport) ~Network();
 
 		//methods
-		void build_network(std::vector<int>& scheme, int print = 0, int seed = 0);
-		void set_allWeights(std::vector<std::vector<double>>& weights);
-		void set_inputs(std::vector<double>& inputs);
-		void forward_prop();
+		__declspec(dllexport) void build_network(std::vector<int>& scheme, int print = 0, int seed = 0);
+		__declspec(dllexport) void set_allWeights(std::vector<std::vector<double>>& weights);
+		__declspec(dllexport) void set_inputs(std::vector<double>& inputs);
+		__declspec(dllexport) void forward_prop();
 
-		std::vector<double> get_outputs();
-		std::vector<std::vector<double>> get_allWeights();
+		__declspec(dllexport) std::vector<double> get_outputs();
+		__declspec(dllexport) std::vector<std::vector<double>> get_allWeights();
 
 
-		std::vector<double> get_layer_outputs(int& num);
-		std::vector<int> get_scheme();
+		__declspec(dllexport) std::vector<double> get_layer_outputs(int& num);
+		__declspec(dllexport) std::vector<int> get_scheme();
 
-		void save(std::string path); // saving the network (scheme and weights)
-		void import(std::string path, int print = 0); // loading a network (scheme and weights), and build it
+		__declspec(dllexport) void save(std::string path); // saving the network (scheme and weights)
+		__declspec(dllexport) void import(std::string path, int print = 0); // loading a network (scheme and weights), and build it
 
 	private:
 

@@ -8,23 +8,23 @@
 namespace NeuralNetwork
 {
 
-	class __declspec(dllexport) Optimum_search : public Back_prop
+	class Optimum_search : public Back_prop
 	{
 	public:
 
-		Optimum_search();
-		~Optimum_search();
+		__declspec(dllexport) Optimum_search();
+		__declspec(dllexport) ~Optimum_search();
 
-		void init(double lambda, double alpha, double stop_crit, std::string save_path);
+		__declspec(dllexport) void init(double lambda, double alpha, double stop_crit, std::string save_path);
 
 		// seting the training set
-		void training_set(std::vector<std::vector<double>>& training_inputs, std::vector<std::vector<double>>& training_outputs);
+		__declspec(dllexport) void training_set(std::vector<std::vector<double>>& training_inputs, std::vector<std::vector<double>>& training_outputs);
 
 		// setting cross validation set
-		void cv_set(std::vector<std::vector<double>>& cv_inputs, std::vector<std::vector<double>>& cv_outputs);
+		__declspec(dllexport) void cv_set(std::vector<std::vector<double>>& cv_inputs, std::vector<std::vector<double>>& cv_outputs);
 
 		// training of multiple networks
-		void search(int N_input, int N_neuron_max, int N_layer_max, int N_output);
+		__declspec(dllexport) void search(int N_input, int N_neuron_max, int N_layer_max, int N_output);
 
 	private:
 

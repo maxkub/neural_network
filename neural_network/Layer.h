@@ -7,24 +7,24 @@
 namespace NeuralNetwork
 {
 
-	class __declspec(dllexport) Layer
+	class Layer
 
 	{
 
 	public:
 
 		//constructor
-		Layer(const int& Ninputs, const int& Nneurons, const int& layer_id);
-		~Layer();
+		__declspec(dllexport) Layer(const int& Ninputs, const int& Nneurons, const int& layer_id);
+		__declspec(dllexport) ~Layer();
 
-		void build_layer(std::default_random_engine& generator);  // build the layer with m_Ninputs and m_Nneurons, initialze all weights randomly and build m_allWeights
-		void set_allWeights(std::vector<double>& weights);        // set value of all the weights in the layer: m_allWeights 
-		void set_inputs(std::vector<double>& inputs);             // set m_inputs
-		void compute();                                           // compute the outputs of the layer: m_outputs
-		void print_outputs();                                     // print m_outputs on screen 
-		void print_inputs();                                      // print m_inputs on screen
-		std::vector<double> get_outputs();                        // get m_outputs
-		std::vector<double> get_weights();                        // get m_allWeights
+		__declspec(dllexport) void build_layer(std::default_random_engine& generator);  // build the layer with m_Ninputs and m_Nneurons, initialze all weights randomly and build m_allWeights
+		__declspec(dllexport) void set_allWeights(std::vector<double>& weights);        // set value of all the weights in the layer: m_allWeights 
+		__declspec(dllexport) void set_inputs(std::vector<double>& inputs);             // set m_inputs
+		__declspec(dllexport) void compute();                                           // compute the outputs of the layer: m_outputs
+		__declspec(dllexport) void print_outputs();                                     // print m_outputs on screen 
+		__declspec(dllexport) void print_inputs();                                      // print m_inputs on screen
+		__declspec(dllexport) std::vector<double> get_outputs();                        // get m_outputs
+		__declspec(dllexport) std::vector<double> get_weights();                        // get m_allWeights
 
 
 	private:

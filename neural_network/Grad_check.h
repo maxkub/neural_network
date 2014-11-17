@@ -8,14 +8,14 @@
 namespace NeuralNetwork
 {
 
-	class __declspec(dllexport) Grad_check : public Back_prop
+	class Grad_check : public Back_prop
 	{
 
 	public:
 
-		void grad_step(std::vector<double>& training_inputs, std::vector<double>& training_outputs);
+		__declspec(dllexport) void grad_step(std::vector<double>& training_inputs, std::vector<double>& training_outputs);
 
-		void training(std::vector<std::vector<double>>& training_inputs, std::vector<std::vector<double>>& training_outputs, double alpha, double stop_crit,
+		__declspec(dllexport) void training(std::vector<std::vector<double>>& training_inputs, std::vector<std::vector<double>>& training_outputs, double alpha, double stop_crit,
 			double epsilon, std::string path);
 
 
