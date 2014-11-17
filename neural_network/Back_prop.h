@@ -11,6 +11,7 @@ namespace NeuralNetwork
 	class Back_prop
 	{
 
+
 	public:
 
 		// constructor
