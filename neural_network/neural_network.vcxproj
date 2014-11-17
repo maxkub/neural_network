@@ -86,14 +86,11 @@
     <ClCompile Include="Back_prop.cpp" />
     <ClCompile Include="Grad_check.cpp" />
     <ClCompile Include="Optimum_search.cpp" />
-    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Back_prop.h" />
     <ClInclude Include="Grad_check.h" />
     <ClInclude Include="Optimum_search.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="stdafx.h" />
     <ClInclude Include="Layer.h" />
     <ClInclude Include="Neural_Network.h" />
     <ClInclude Include="Neuron.h" />
