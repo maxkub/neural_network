@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "Neural_Network.h"
+#include <random>
 
 
 namespace NeuralNetwork
