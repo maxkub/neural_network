@@ -8,50 +8,50 @@
 namespace NeuralNetwork
 {
 
-	class Back_prop
+	class __declspec(dllexport) Back_prop
 	{
 
 
 	public:
 
 		// constructor
-		__declspec(dllexport) Back_prop(); // default constructor
-		__declspec(dllexport) Back_prop(Network& network, double& lambda);
-		__declspec(dllexport) ~Back_prop();
+		Back_prop(); // default constructor
+		Back_prop(Network& network, double& lambda);
+		~Back_prop();
 
 
-		__declspec(dllexport) void init();
+		void init();
 
 		// apply back prop algorithm to the training data : to compute m_Deltas
-		__declspec(dllexport) void back_propagation_step(std::vector<double>& training_inputs, std::vector<double>& training_outputs);
+		void back_propagation_step(std::vector<double>& training_inputs, std::vector<double>& training_outputs);
 
 		// compute gradients using the results of back_propagation, using m_Deltas
-		__declspec(dllexport) void back_prop_grads();
+		void back_prop_grads();
 
 		// perform gradient descent using m_Dvect
-		__declspec(dllexport) void gradient_descent(double alpha);
+		void gradient_descent(double alpha);
 
 		// sum cost function terms
-		__declspec(dllexport) void cost_sum(std::vector<double>& net_outputs, std::vector<double>& training_outputs);
+		void cost_sum(std::vector<double>& net_outputs, std::vector<double>& training_outputs);
 
 		// compute cost function, with regularization terms
-		__declspec(dllexport) void cost();
+		void cost();
 
 		// automatic training of the network
-		__declspec(dllexport) void training(std::vector<std::vector<double>>& training_inputs, std::vector<std::vector<double>>& training_outputs, double alpha, double stop_crit,
+		void training(std::vector<std::vector<double>>& training_inputs, std::vector<std::vector<double>>& training_outputs, double alpha, double stop_crit,
 			std::string path);
 
 		// save current state of training (for large training data sets)
-		__declspec(dllexport) void save(std::string& path);
+		void save(std::string& path);
 
 		// loading the last saved state in training
-		__declspec(dllexport) void load(std::string& path);
+		void load(std::string& path);
 
-		__declspec(dllexport) double get_cost();
+		double get_cost();
 
-		__declspec(dllexport) std::vector<double> get_cost_vect();
+		std::vector<double> get_cost_vect();
 
-		__declspec(dllexport) std::vector<std::vector<double>> get_mod_weights();
+		std::vector<std::vector<double>> get_mod_weights();
 
 	private:
 
