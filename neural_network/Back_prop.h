@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include <vector>
-#include "F:/Projets-C++/neural_network/neural_network/Neural_Network.h"
+#include "Neural_Network.h"
 
 class Back_prop
 {
@@ -11,6 +11,7 @@ class Back_prop
 public:
 
 	// constructor
+	Back_prop(); // default constructor
 	Back_prop(Network& network, double& lambda);
 	~Back_prop();
 

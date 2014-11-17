@@ -12,7 +12,7 @@ class Neuron
 public:
 
 	//constructor
-	Neuron(); 
+	Neuron();
 	~Neuron();
 
 	//methods

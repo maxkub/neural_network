@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "F:/Projets-C++/neural_network/neural_network/Neural_Network.h"
+#include "Neural_Network.h"
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -7,8 +7,7 @@
 #include <sstream>
 #include <random>
 #include <chrono>
-#include "F:/Projets-C++/neural_network/neural_network/Neuron.h"
-#include "F:/Projets-C++/neural_network/neural_network/Layer.h"
+#include "Layer.h"
 
 
 using namespace std;

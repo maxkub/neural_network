@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <iostream>
 #include <vector>
-#include "F:/Projets-C++/neural_network/neural_network/Neural_Network.h"
+#include "Neural_Network.h"
 
 using namespace std;
 

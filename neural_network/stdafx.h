@@ -14,6 +14,6 @@
 
 // TODO: reference additional headers your program requires here
 
-#include "F:/Projets-C++/neural_network/neural_network/Layer.h"
-#include "F:/Projets-C++/neural_network/neural_network/Neuron.h"
-#include "F:/Projets-C++/neural_network/neural_network/Neural_Network.h"
+#include "Layer.h"
+#include "Neuron.h"
+#include "Neural_Network.h"

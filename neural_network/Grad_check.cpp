@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include <fstream>
 #include <iostream>
-#include "F:/Projets-C++/neural_network/neural_network/Back_prop.h"
-#include "F:/Projets-C++/neural_network/neural_network/Neural_Network.h"
-#include "F:/Projets-C++/neural_network/neural_network/Grad_check.h"
+#include "Back_prop.h"
+#include "Neural_Network.h"
+#include "Grad_check.h"
 #include <math.h>
 
 using namespace std;
@@ -64,10 +64,10 @@ void Grad_check::training(vector<vector<double>>& training_inputs, vector<vector
 			grad_step(training_inputs[i], training_outputs[i]);
 
 			vector<double> net_outputs = m_network.get_outputs();
-			cost(net_outputs, training_outputs[i]);
+			cost_sum(net_outputs, training_outputs[i]);
 		}
 
-		m_cost = m_cost / ((float)m_training_num);
+		cost();
 		m_cost_vect.push_back(m_cost);
 
 		// printing cost_vect

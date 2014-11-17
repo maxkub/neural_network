@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include <iostream>
 #include <random>
-#include "F:/Projets-C++/neural_network/neural_network/Layer.h"
+#include "Layer.h"
 #include <vector>
-#include "F:/Projets-C++/neural_network/neural_network/Neuron.h"
+#include "Neuron.h"
 
 
 using namespace std;

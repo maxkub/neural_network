@@ -30,13 +30,13 @@
     <ClCompile Include="Back_prop.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="network_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Neural_Network.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Grad_check.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Optimum_search.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -60,6 +60,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Grad_check.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Optimum_search.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "F:/Projets-C++/neural_network/neural_network/Neuron.h"
+#include "Neuron.h"
 #include <iostream>
 #include <vector>
 #include <random>

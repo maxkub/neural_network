@@ -1,11 +1,16 @@
 #include "stdafx.h"
 #include <fstream>
 #include <iostream>
-#include "F:/Projets-C++/neural_network/neural_network/Back_prop.h"
-#include "F:/Projets-C++/neural_network/neural_network/Neural_Network.h"
+#include "Back_prop.h"
+#include "Neural_Network.h"
 #include <math.h>
 
 using namespace std;
+
+// default constructor
+Back_prop::Back_prop()
+{
+}
 
 // Constructor
 Back_prop::Back_prop(Network& network, double& lambda) : m_network(network), m_lambda(lambda)
@@ -166,7 +171,7 @@ void Back_prop::gradient_descent(double alpha)
 
 		for (size_t j = 0; j < m_Dvect[i].size(); ++j)
 		{
-			m_net_weights[i][j] -= alpha*m_Dvect[i][j];
+			m_net_weights[i][j] -= alpha*(1. / ((float)m_training_num)*m_Deltas[i][j] + m_lambda*m_net_weights[i][j]);
 		}
 	}
 
@@ -254,7 +259,7 @@ void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<
 		}
 
 		// compute gradients from back prop algorithm
-		back_prop_grads();
+		//back_prop_grads();
 
 		// modify network's weights using gradient descent
 		gradient_descent(alpha);

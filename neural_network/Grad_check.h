@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include <vector>
-#include "F:/Projets-C++/neural_network/neural_network/Back_prop.h"
+#include "Back_prop.h"
 
 class Grad_check : public Back_prop
 {
