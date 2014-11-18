@@ -2,6 +2,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include "Optimum_search.h"
 #include "Neural_Network.h"
 #include "Back_Prop.h"
@@ -53,6 +54,8 @@ namespace NeuralNetwork
 		vector<double> net_outputs;
 		vector<double> cost_vect;
 
+		int it = 0;
+
 
 		for (int i = 1; i <= N_layer_max; ++i)
 		{
@@ -75,7 +78,7 @@ namespace NeuralNetwork
 					back_prop.training(m_training_in, m_training_out, m_alpha, m_stop_crit, false);
 
 					cost_vect = back_prop.get_cost_vect();
-					m_training_cost.push_back(cost_vect.back());
+					
 
 					for (size_t k = 0; k < m_cv_in.size(); ++k)
 					{
@@ -90,7 +93,20 @@ namespace NeuralNetwork
 					network.cost(m_cv_in.size(),m_lambda);
 
 					cout << " cost " << network.get_cost() << endl;
-					m_cv_cost.push_back(network.get_cost());
+
+					if (cost_vect.back() == numeric_limits<double>::infinity() || network.get_cost() == numeric_limits<double>::infinity())
+					{
+						m_training_cost.push_back(0.);
+						m_cv_cost.push_back(0.);
+					}
+					else
+					{
+						m_training_cost.push_back(cost_vect.back());
+						m_cv_cost.push_back(network.get_cost());
+					}
+
+					++it;
+					
 				}
 				catch (...)
 				{
@@ -98,7 +114,7 @@ namespace NeuralNetwork
 					m_cv_cost.push_back(0.);
 				}
 
-				m_N_neurons_tot.push_back(i*(j + 1));
+				m_N_neurons_tot.push_back(it);
 
 				prints();
 
