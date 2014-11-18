@@ -31,13 +31,22 @@ namespace NeuralNetwork
 		__declspec(dllexport) std::vector<double> get_layer_outputs(int& num);
 		__declspec(dllexport) std::vector<int> get_scheme();
 
+		// sum cost function terms
+		__declspec(dllexport) void cost_sum(std::vector<double>& net_outputs, std::vector<double>& training_outputs);
+
+		// compute cost function, with regularization terms
+		__declspec(dllexport) void cost(int N_trainings, double lambda);
+
+		__declspec(dllexport) void set_cost(double cost);
+
+		__declspec(dllexport) double get_cost();
+
 		__declspec(dllexport) void save(std::string path); // saving the network (scheme and weights)
 		__declspec(dllexport) void import(std::string path, int print = 0); // loading a network (scheme and weights), and build it
 
 	private:
 
 		void unrolled_weights(); // build a vector of unrolled weights m_allweights
-
 		int m_prints;           // 0: No printing , 1: print output of all neurons
 		int m_Nlayers;          // Number of hidden layers
 		int m_input_size;       // Lenght of the input vector (without bias)
@@ -48,6 +57,7 @@ namespace NeuralNetwork
 		std::vector<Layer> m_network;             // vector of all layers (size = m_Nlayers+1) +1 is for the output layer
 
 		std::vector<int> m_scheme; // scheme of the network = {m_input_size, m_Nrows, ..., m_Nrows, m_Noutputs} without the bias units, m_scheme.size() = total layers
+		double m_cost; // to compute cost over a training or validation set
 	};
 
 

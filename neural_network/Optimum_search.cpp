@@ -1,5 +1,7 @@
 
 #include <vector>
+#include <fstream>
+#include <iostream>
 #include "Optimum_search.h"
 #include "Neural_Network.h"
 #include "Back_Prop.h"
@@ -18,13 +20,14 @@ namespace NeuralNetwork
 	}
 
 	// initiale the back propagation parameters
-	void Optimum_search::init(double lambda, double alpha, double stop_crit, string save_path)
+	void Optimum_search::init(double& lambda, double& alpha, double& stop_crit)
 	{
 		m_lambda = lambda;
 		m_alpha = alpha;
 		m_stop_crit = stop_crit;
-		m_save_path = save_path;
+		m_training_cost = {};
 		m_cv_cost = {};
+		m_N_neurons_tot = {};
 	}
 
 	// set the training set
@@ -43,12 +46,12 @@ namespace NeuralNetwork
 	}
 
 	// training of multiple networks
-	void Optimum_search::search(int N_input, int N_neuron_max, int N_layer_max, int N_output)
+	void Optimum_search::search(int N_input, int N_neuron_max, int N_layer_max, int N_output, bool print)
 	{
 		vector<int> scheme_trunc = { N_input }; //truncated scheme vector
 		vector<int> scheme;                     // full scheme vector
-		Network network;
 		vector<double> net_outputs;
+		vector<double> cost_vect;
 
 
 		for (int i = 1; i <= N_layer_max; ++i)
@@ -62,26 +65,75 @@ namespace NeuralNetwork
 				scheme = scheme_trunc;
 				scheme.push_back(N_output);
 
+				Network network;
 				network.build_network(scheme);
 
 				Back_prop back_prop(network, m_lambda);
-				back_prop.training(m_training_in, m_training_out, m_alpha, m_stop_crit, m_save_path);
 
-				Back_prop::init();
-				for (size_t k = 0; k < m_cv_in.size(); ++k)
+				try
 				{
-					network.set_inputs(m_cv_in[k]);
-					network.forward_prop();
+					back_prop.training(m_training_in, m_training_out, m_alpha, m_stop_crit, false);
 
-					net_outputs = network.get_outputs();
-					cost_sum(net_outputs, m_cv_out[k]);
+					cost_vect = back_prop.get_cost_vect();
+					m_training_cost.push_back(cost_vect.back());
+
+					for (size_t k = 0; k < m_cv_in.size(); ++k)
+					{
+						network.set_inputs(m_cv_in[k]);
+						network.forward_prop();
+
+						//net_outputs = network.get_outputs();
+						network.cost_sum(network.get_outputs(), m_cv_out[k]);
+					}
+
+					
+					network.cost(m_cv_in.size(),m_lambda);
+
+					cout << " cost " << network.get_cost() << endl;
+					m_cv_cost.push_back(network.get_cost());
+				}
+				catch (...)
+				{
+					m_training_cost.push_back(0.);
+					m_cv_cost.push_back(0.);
 				}
 
-				cost();
-				m_cv_cost.push_back(get_cost());
+				m_N_neurons_tot.push_back(i*(j + 1));
+
+				prints();
+
+				network.~Network();
+				back_prop.~Back_prop();
+				
 			}
 		}
 
+	}
+
+	// set m_save_path
+	void Optimum_search::set_save_path(string& save_path)
+	{
+		m_save_path = save_path;
+	}
+
+
+	// printing the results
+	void Optimum_search::prints()
+	{
+		ofstream file(m_save_path.c_str());
+
+		if (file)
+		{
+			for (size_t i = 0; i < m_training_cost.size(); ++i)
+			{
+				file << m_N_neurons_tot[i] << " " << m_training_cost[i] << " " << m_cv_cost[i] << endl;
+			}
+		}
+		else
+		{
+			cout << "ERROR in Optimum_search.print : can't open file " << m_save_path.c_str() << endl;
+			exit(1);
+		}
 	}
 
 

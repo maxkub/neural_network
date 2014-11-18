@@ -32,7 +32,6 @@ namespace NeuralNetwork
 	void Back_prop::init()
 	{
 		m_training_num = 0;
-		m_cost = 0.;
 		m_Deltas = {};
 		m_scheme = m_network.get_scheme();
 		m_net_weights = m_network.get_allWeights();
@@ -184,39 +183,10 @@ namespace NeuralNetwork
 
 	}
 
-	// compute cost function
-	void Back_prop::cost_sum(vector<double>& net_outputs, vector<double>& training_outputs)
-	{
-		//vector<double> net_outputs = m_network.get_outputs();
-
-		for (int i = 0; i < m_scheme.back(); ++i)
-		{
-			m_cost += -(training_outputs[i] * log(net_outputs[i]) + (1. - training_outputs[i]) * log(1. - net_outputs[i]));
-		}
-	}
-
-
-	//compute cost on training set with regularization terms
-	void Back_prop::cost()
-	{
-
-		double regul_term = 0.;
-
-		for (auto c : m_net_weights)
-		{
-			for (auto w : c)
-			{
-				regul_term += w*w;
-			}
-		}
-
-		m_cost = m_cost / ((float)m_training_num) + m_lambda / ((float)m_training_num * 2.) * regul_term;
-
-	}
 
 
 	// Automatic training of the network
-	void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<double>>& training_outputs, double alpha, double stop_crit, string path)
+	void Back_prop::training(vector<vector<double>>& training_inputs, vector<vector<double>>& training_outputs, double alpha, double stop_crit, bool print)
 	{
 
 		// init
@@ -233,6 +203,7 @@ namespace NeuralNetwork
 			// re-initialize training
 			init();
 
+			m_network.set_cost(0.);
 			// loop on the training set
 			for (size_t i = 0; i < training_inputs.size(); ++i)
 			{
@@ -242,25 +213,15 @@ namespace NeuralNetwork
 				back_propagation_step(training_inputs[i], training_outputs[i]);
 
 				vector<double> net_outputs = m_network.get_outputs();
-				cost_sum(net_outputs, training_outputs[i]);
+				m_network.cost_sum(net_outputs, training_outputs[i]);
 			}
 
-			cost();
-			m_cost_vect.push_back(m_cost);
+			m_network.cost(m_training_num, m_lambda);
+			m_cost_vect.push_back(m_network.get_cost());
 
-			// printing cost_vect
-			ofstream file(path.c_str());
-
-			if (file)
+			if (print)
 			{
-				for (size_t j = 0; j < m_cost_vect.size(); ++j)
-				{
-					file << j << ", " << m_cost_vect[j] << endl;
-				}
-			}
-			else
-			{
-				cout << "ERROR in Back_prop : can't open file in " << path.c_str() << endl;
+				prints();
 			}
 
 			// compute gradients from back prop algorithm
@@ -282,14 +243,32 @@ namespace NeuralNetwork
 
 	}
 
-
-
-
-	// get m_cost
-	double Back_prop::get_cost()
+	// printing the results of training
+	void Back_prop::prints()
 	{
-		return m_cost;
+		// printing cost_vect
+		ofstream file(m_save_path.c_str());
+
+		if (file)
+		{
+			for (size_t j = 0; j < m_cost_vect.size(); ++j)
+			{
+				file << j << ", " << m_cost_vect[j] << endl;
+			}
+		}
+		else
+		{
+			cout << "ERROR in Back_prop.training : can't open file in " << m_save_path.c_str() << endl;
+			exit(1);
+		}
 	}
+
+	// set m_save_path
+	void Back_prop::set_save_path(string& path)
+	{
+		m_save_path = path;
+	}
+	
 
 	// get m_cost_vect
 	vector<double> Back_prop::get_cost_vect()

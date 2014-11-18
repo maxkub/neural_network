@@ -28,10 +28,11 @@ namespace NeuralNetwork
 	void Network::build_network(vector<int>& scheme, int print, int seed)
 	{
 
-		//set scheme
+		//initializations
 		m_scheme = scheme;
 		m_input_size = scheme[0];
 		m_prints = print;
+		m_cost = 0.;
 
 		// create random number generator
 		default_random_engine generator;
@@ -197,6 +198,20 @@ namespace NeuralNetwork
 	}
 
 
+	// get m_cost
+	double Network::get_cost()
+	{
+		return m_cost;
+	}
+
+
+	// Set m_cost
+	void Network::set_cost(double cost)
+	{
+		m_cost = cost;
+	}
+
+
 
 
 	// saving the network : scheme and weights
@@ -282,5 +297,40 @@ namespace NeuralNetwork
 		}
 
 	}
+
+
+
+	// compute cost function
+	void Network::cost_sum(vector<double>& net_outputs, vector<double>& training_outputs)
+	{
+		//vector<double> net_outputs = m_network.get_outputs();
+
+		for (int i = 0; i < m_scheme.back(); ++i)
+		{
+			m_cost += -(training_outputs[i] * log(net_outputs[i]) + (1. - training_outputs[i]) * log(1. - net_outputs[i]));
+		}
+	}
+
+
+	//compute cost on training set with regularization terms
+	void Network::cost(int N_trainings, double lambda)
+	{
+
+		double regul_term = 0.;
+
+		for (auto c : m_allweights)
+		{
+			for (auto w : c)
+			{
+				regul_term += w*w;
+			}
+		}
+
+		m_cost = m_cost / ((float)N_trainings) + lambda / ((float)N_trainings * 2.) * regul_term;
+
+	}
+
+
+
 }
 

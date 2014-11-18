@@ -67,10 +67,10 @@ namespace NeuralNetwork
 				grad_step(training_inputs[i], training_outputs[i]);
 
 				vector<double> net_outputs = m_network.get_outputs();
-				cost_sum(net_outputs, training_outputs[i]);
+				//cost_sum(net_outputs, training_outputs[i]);
 			}
 
-			cost();
+			//cost();
 			m_cost_vect.push_back(m_cost);
 
 			// printing cost_vect
