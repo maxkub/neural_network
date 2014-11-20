@@ -162,7 +162,7 @@ namespace NeuralNetwork
 
 			for (size_t j = 0; j < m_Dvect[i].size(); ++j)
 			{
-				m_Dvect[i][j] = 1. / ((float)m_training_num)*m_Deltas[i][j] + m_lambda*m_net_weights[i][j];
+				m_Dvect[i][j] = 1. / (static_cast<double>(m_training_num))*m_Deltas[i][j] + m_lambda*m_net_weights[i][j];
 			}
 		}
 	}
@@ -175,7 +175,7 @@ namespace NeuralNetwork
 
 			for (size_t j = 0; j < m_Dvect[i].size(); ++j)
 			{
-				m_net_weights[i][j] -= alpha*(1. / ((float)m_training_num)*m_Deltas[i][j] + m_lambda*m_net_weights[i][j]);
+				m_net_weights[i][j] -= alpha*(1. / (static_cast<double>(m_training_num))*m_Deltas[i][j] + m_lambda*m_net_weights[i][j]);
 			}
 		}
 

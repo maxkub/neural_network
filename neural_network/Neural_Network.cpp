@@ -326,7 +326,9 @@ namespace NeuralNetwork
 			}
 		}
 
-		m_cost = m_cost / ((float)N_trainings) + lambda / ((float)N_trainings * 2.) * regul_term;
+		double N = static_cast<double>(N_trainings);
+
+		m_cost = m_cost / N + lambda / (N * 2.) * regul_term;
 
 	}
 
