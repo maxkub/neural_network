@@ -50,13 +50,14 @@ namespace NeuralNetwork
 
 		m_input_size = m_scheme[0];
 		m_Noutputs = m_scheme.back();
-		m_Nlayers = m_scheme.size() - 2; // -Input -output
+		m_Nlayers = static_cast<int>(m_scheme.size()) - 2; // -Input -output
 
 
 
 		for (size_t i = 1; i <= m_scheme.size() - 1; ++i)
 		{
-			Layer layer(m_scheme[i - 1] + 1, m_scheme[i], i);
+			int k = static_cast<int>(i);
+			Layer layer(m_scheme[k - 1] + 1, m_scheme[k], k);
 			layer.build_layer(generator);
 
 			m_network.push_back(layer);

@@ -96,7 +96,7 @@ namespace NeuralNetwork
 					sum += deltas[it][k] * m_net_weights[i][k*(m_scheme[i] + 1) + j];
 				}
 
-				int num = i - 1;
+				int num = static_cast<int>(i) - 1;
 				layer_outputs = m_network.get_layer_outputs(num);
 
 				temp_d.push_back(sum*layer_outputs[j] * (1. - layer_outputs[j]));
@@ -122,7 +122,7 @@ namespace NeuralNetwork
 			}
 			else
 			{
-				int num = i - 1;
+				int num = static_cast<int>(i) - 1;
 				layer_outputs = m_network.get_layer_outputs(num);
 			}
 

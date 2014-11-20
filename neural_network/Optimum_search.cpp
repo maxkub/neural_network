@@ -90,7 +90,7 @@ namespace NeuralNetwork
 					}
 
 					
-					network.cost(m_cv_in.size(),m_lambda);
+					network.cost(static_cast<long>(m_cv_in.size()),m_lambda);
 
 					cout << " cost " << network.get_cost() << endl;
 

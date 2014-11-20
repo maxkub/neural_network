@@ -75,7 +75,7 @@ namespace NeuralNetwork
 
 			m_allWeights = weights;
 
-			int N = weights.size() / m_Nneurons;
+			int N = static_cast<int>(weights.size()) / m_Nneurons;
 			vector<double> nweights;
 
 			for (int i = 0; i < m_Nneurons; ++i)
