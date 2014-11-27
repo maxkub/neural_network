@@ -5,10 +5,12 @@
 #include <fstream>
 #include <sstream>
 #include <chrono>
+#include <ppl.h>
 #include "Layer.h"
 
 
 using namespace std;
+using namespace concurrency;
 
 
 namespace NeuralNetwork
@@ -104,7 +106,7 @@ namespace NeuralNetwork
 	{
 
 		if (weights.size() == m_allweights.size())
-		{
+		{	
 			for (int i = 0; i <= m_Nlayers; ++i)
 			{
 				if (weights[i].size() == m_allweights[i].size())
@@ -120,6 +122,7 @@ namespace NeuralNetwork
 					exit(1);
 				}
 			}
+			
 
 		}
 		else

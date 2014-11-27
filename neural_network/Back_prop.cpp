@@ -1,11 +1,13 @@
 
 #include <fstream>
 #include <iostream>
+#include <ppl.h>
 #include "Back_Prop.h"
 #include "Neural_Network.h"
 
 
 using namespace std;
+using namespace concurrency;
 
 
 namespace NeuralNetwork
@@ -83,8 +85,13 @@ namespace NeuralNetwork
 
 			temp_d.clear();
 
-			//cout << endl;
 
+			int num = static_cast<int>(i)-1;
+			layer_outputs = m_network.get_layer_outputs(num);
+
+			temp_d.assign(m_scheme[1] + 1, 0.);
+
+			//parallel_for(int(0), m_scheme[i]+1, [&](int j)
 			for (int j = 0; j <= m_scheme[i]; ++j) // loop on neurons in layer l (with the bias)
 			{
 
@@ -92,26 +99,21 @@ namespace NeuralNetwork
 
 				for (int k = 0; k < m_scheme[i + 1]; ++k) // loop on neurons in layer l+1 (without the bias)
 				{
-					//cout << " ..." << i << " " << j << " " << k << " " << k*(m_scheme[i] + 1) + j << endl;
 					sum += deltas[it][k] * m_net_weights[i][k*(m_scheme[i] + 1) + j];
 				}
 
-				int num = static_cast<int>(i) - 1;
-				layer_outputs = m_network.get_layer_outputs(num);
-
-				temp_d.push_back(sum*layer_outputs[j] * (1. - layer_outputs[j]));
-
+				//temp_d.push_back(sum*layer_outputs[j] * (1. - layer_outputs[j]));
+				temp_d[j] = sum*layer_outputs[j] * (1. - layer_outputs[j]);
 
 			}
+			//});
 
 			deltas.push_back(temp_d);
 			++it;
 		}
 
 
-		//cout << "end deltas \n";
-
-		// compute Deltas array
+		// compute Deltas array		
 		for (size_t i = 0; i < m_net_weights.size(); ++i)
 		{
 
@@ -122,7 +124,7 @@ namespace NeuralNetwork
 			}
 			else
 			{
-				int num = static_cast<int>(i) - 1;
+				int num = static_cast<int>(i)-1;
 				layer_outputs = m_network.get_layer_outputs(num);
 			}
 
@@ -170,14 +172,18 @@ namespace NeuralNetwork
 	// gradient descent
 	void Back_prop::gradient_descent(double alpha)
 	{
-		for (size_t i = 0; i < m_Dvect.size(); ++i)
+
+		double N = static_cast<double>(m_training_num);
+
+		parallel_for(size_t(0), m_Dvect.size(), [&](size_t i)
 		{
 
 			for (size_t j = 0; j < m_Dvect[i].size(); ++j)
 			{
-				m_net_weights[i][j] -= alpha*(1. / (static_cast<double>(m_training_num))*m_Deltas[i][j] + m_lambda*m_net_weights[i][j]);
+				m_net_weights[i][j] -= alpha*(1. / N * m_Deltas[i][j] + m_lambda*m_net_weights[i][j]);
 			}
-		}
+		});
+		
 
 		m_network.set_allWeights(m_net_weights);
 
@@ -205,6 +211,8 @@ namespace NeuralNetwork
 
 			m_network.set_cost(0.);
 			// loop on the training set
+
+			//parallel_for(size_t(0), training_inputs.size(), [&](size_t i)
 			for (size_t i = 0; i < training_inputs.size(); ++i)
 			{
 				//cout << endl;
@@ -215,6 +223,7 @@ namespace NeuralNetwork
 				vector<double> net_outputs = m_network.get_outputs();
 				m_network.cost_sum(net_outputs, training_outputs[i]);
 			}
+			//});
 
 			m_network.cost(m_training_num, m_lambda);
 			m_cost_vect.push_back(m_network.get_cost());

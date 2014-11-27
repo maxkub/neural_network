@@ -2,11 +2,12 @@
 #include <iostream>
 #include "Layer.h"
 #include <vector>
+#include <ppl.h>
 #include "Neuron.h"
 
 
 using namespace std;
-
+using namespace concurrency;
 
 namespace NeuralNetwork
 {
@@ -76,12 +77,11 @@ namespace NeuralNetwork
 			m_allWeights = weights;
 
 			int N = static_cast<int>(weights.size()) / m_Nneurons;
-			vector<double> nweights;
+			
 
-			for (int i = 0; i < m_Nneurons; ++i)
+			parallel_for(int(0), m_Nneurons, [&](int i)
 			{
-
-				nweights.clear();
+				vector<double> nweights = {};
 
 				for (int j = 0; j < N; ++j)
 				{
@@ -89,7 +89,7 @@ namespace NeuralNetwork
 				}
 
 				m_layer[i].set_weights(nweights);
-			}
+			});
 
 		}
 		else
@@ -117,14 +117,15 @@ namespace NeuralNetwork
 	// computing outputs
 	void Layer::compute()
 	{
-		for (int i = 0; i < m_Nneurons; ++i)
+		parallel_for(int(0), m_Nneurons, [&](int i)
 		{
 			m_layer[i].compute();
 			m_outputs[i] = m_layer[i].get_output();
-		}
+		});
 
-		//m_outputs.push_back(1.); // adding the bias unit
 	}
+
+
 
 	// print output of all neurons in layer
 	void Layer::print_outputs()
