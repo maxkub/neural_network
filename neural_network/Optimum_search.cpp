@@ -79,6 +79,7 @@ namespace NeuralNetwork
 
 					cost_vect = back_prop.get_cost_vect();
 					
+					network.set_cost(0.);
 
 					for (size_t k = 0; k < m_cv_in.size(); ++k)
 					{
@@ -117,7 +118,7 @@ namespace NeuralNetwork
 				m_N_neurons_tot.push_back(it);
 
 				prints();
-
+				
 				network.~Network();
 				back_prop.~Back_prop();
 				

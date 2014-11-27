@@ -70,7 +70,7 @@ namespace NeuralNetwork
 		for (size_t i = 0; i < net_outputs.size(); ++i)
 		{
 			//cout << "net_outputs.size = " << net_outputs.size() << endl;
-			temp_d.push_back((net_outputs[i] - training_outputs[i])*net_outputs[i] * (1. - net_outputs[i]));
+			temp_d.push_back((net_outputs[i] - training_outputs[i])); //*net_outputs[i] * (1. - net_outputs[i]));
 		}
 
 		deltas.push_back(temp_d);
