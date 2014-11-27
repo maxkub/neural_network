@@ -59,7 +59,7 @@ namespace NeuralNetwork
 		vector<vector<double>> deltas;
 		vector<double> layer_outputs;
 		vector<double> temp_d;
-		double sum = 0.;
+		//double sum = 0.;
 
 
 		m_network.set_inputs(training_inputs);
@@ -95,14 +95,13 @@ namespace NeuralNetwork
 			for (int j = 0; j <= m_scheme[i]; ++j) // loop on neurons in layer l (with the bias)
 			{
 
-				sum = 0.;
+				double sum = 0.;
 
 				for (int k = 0; k < m_scheme[i + 1]; ++k) // loop on neurons in layer l+1 (without the bias)
 				{
 					sum += deltas[it][k] * m_net_weights[i][k*(m_scheme[i] + 1) + j];
 				}
 
-				//temp_d.push_back(sum*layer_outputs[j] * (1. - layer_outputs[j]));
 				temp_d[j] = sum*layer_outputs[j] * (1. - layer_outputs[j]);
 
 			}
